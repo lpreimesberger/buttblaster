@@ -19,13 +19,17 @@ def butt(bid: str):
     return send_from_directory('butts', bid)
 
 
-@app.route('/rateButt/<bid>/<value>')
+@app.route('/ratebutt/<bid>/<value>', methods=['PUT'])
 def rateButt(bid: str, value):
-    doc = db.get(bid)
-    if 'ratings' not in doc.keys():
-        doc['ratings'] = []
-        doc['ratings'].append({"posted": datetime.datetime.utcnow().isoformat(), "value": value})
-        db.save(doc)
+    try:
+        print("getting butt {}".format(bid))
+        doc = db.get(bid)
+        if 'ratings' not in doc.keys():
+            doc['ratings'] = []
+            doc['ratings'].append({"posted": datetime.datetime.utcnow().isoformat(), "value": value})
+            db.save(doc)
+    except Exception as e:
+        print(e)
     return send_from_directory('butts', bid)
 
 

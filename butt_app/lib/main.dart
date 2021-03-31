@@ -3,15 +3,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart' as http;
+import 'package:sprintf/sprintf.dart';
 
-var SERVER = '192.168.86.133:5000';
+var serverAddress = '192.168.86.133:5000';
 
 class TheButt {
   List<Data> data;
+
   TheButt({this.data});
+
   TheButt.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      data = new List<Data>();
+      data = [];
       json['data'].forEach((v) {
         data.add(new Data.fromJson(v));
       });
@@ -33,6 +36,8 @@ class Data {
   String added;
   String bio;
   String name;
+  double rating;
+  List<int> ratings;
 
   Data({this.sId, this.sRev, this.added, this.bio, this.name});
 
@@ -42,6 +47,8 @@ class Data {
     added = json['added'];
     bio = json['bio'];
     name = json['name'];
+    rating = json['rating'];
+    ratings = json['ratings'];
   }
 
   Map<String, dynamic> toJson() {
@@ -54,7 +61,6 @@ class Data {
     return data;
   }
 }
-
 
 void main() {
   runApp(MyApp());
@@ -83,14 +89,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   Future<TheButt> futureButt;
-  List<Data>  allButts = new List<Data>();
+  List<Data> allButts = [];
   int buttFinger = 0;
   String burner;
   String posted;
   String bio;
   String uid;
+  double score = 3;
+  int    votes = 0;
   String buttImage = "placeholder";
 
   Future<TheButt> fetchButts() async {
@@ -104,36 +111,102 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void buttLoad(int thisButt){
+  double buttAverage(List<int> scores){
+    int sum = 0;
+    if( scores.length < 1) return 0;
+    scores.forEach((element) { sum = sum + element;});
+    return sum / scores.length;
+  }
+  
+  Future<void> rateButt(int thisButt, int newScore) async {
+    if(thisButt > allButts.length) return;
+    var buttGuid =allButts[thisButt].sId;
+    final response = await http.put(Uri.http('192.168.86.133:5000', 'ratebutt/$buttGuid/$newScore'));
+    setState(() {
+      if(allButts[thisButt].ratings == null) allButts[thisButt].ratings = [];
+      allButts[thisButt].ratings.add(newScore);
+      allButts[thisButt].rating = buttAverage(allButts[thisButt].ratings);
+      score = allButts[thisButt].rating;
+      votes = allButts[thisButt].ratings.length;
+    });
+  }
+
+  void buttLoad(int thisButt) {
     setState(() {
       burner = allButts[thisButt].name;
       bio = allButts[thisButt].bio;
       posted = allButts[thisButt].added;
       uid = allButts[thisButt].sId;
-      buttImage = 'http://' + SERVER + '/butt/' + uid + ".png";
+      score = (allButts[thisButt].rating != null) ? allButts[thisButt].rating : 0;
+      buttImage = 'http://' + serverAddress + '/butt/' + uid + ".png";
+      votes = (allButts[thisButt].ratings != null) ? allButts[thisButt].ratings.length : 0;
     });
   }
 
-
-  void buttExtendedParse(TheButt x){
+  void buttExtendedParse(TheButt x) {
     allButts.clear();
     buttFinger = 0;
-    for( var record in x.data ){
+    for (var record in x.data) {
       print(record);
       allButts.add(record);
     }
     buttLoad(buttFinger);
   }
 
-  void buttParse(){
+  void buttParse() {
     futureButt.then((value) => buttExtendedParse(value));
   }
-  
+
   @override
   void initState() {
     super.initState();
     futureButt = fetchButts();
-    futureButt.whenComplete(() => { buttParse()}); 
+    futureButt.whenComplete(() => {buttParse()});
+  }
+
+  Widget _buttFaces(){
+    return RatingBar.builder(
+        initialRating: 3,
+        itemCount: 5,
+        onRatingUpdate: (rating) {
+          print(rating);
+          rateButt(buttFinger, rating.toInt());
+        },
+
+        itemBuilder: (context, index) {
+          switch (index) {
+            case 0:
+              return Icon(
+                Icons.sentiment_very_dissatisfied,
+                size: 60,
+                color: Colors.red,
+              );
+            case 1:
+              return Icon(
+                Icons.sentiment_dissatisfied,
+                size: 60,
+                color: Colors.redAccent,
+              );
+            case 2:
+              return Icon(
+                Icons.sentiment_neutral,
+                size: 60,
+                color: Colors.amber,
+              );
+            case 3:
+              return Icon(
+                Icons.sentiment_satisfied,
+                size: 60,
+                color: Colors.lightGreen,
+              );
+            default:
+              return Icon(
+                Icons.sentiment_very_satisfied,
+                size: 60,
+                color: Colors.green,
+              );
+          }
+        });
   }
 
   @override
@@ -154,54 +227,54 @@ class _MyHomePageState extends State<MyHomePage> {
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Image.network(buttImage),
+            GestureDetector(
+              onHorizontalDragEnd: (dragEndDetails) {
+                if (dragEndDetails.primaryVelocity < 0) {
+                  // Page forwards
+                  print('Move page forwards');
+                  _goForward();
+                } else if (dragEndDetails.primaryVelocity > 0) {
+                  // Page backwards
+                  print('Move page backwards');
+                  _goBack();
+                }
+              },
+              child: Image.network(buttImage, height: 300,),
+            )            ,
             Text(
               '$burner',
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headline3,
             ),
             Text(
               '$bio',
+              style: Theme.of(context).textTheme.bodyText2,
             ),
-        RatingBar.builder(
-          initialRating: 3,
-          itemCount: 5,
-          itemBuilder: (context, index) {
-            switch (index) {
-              case 0:
-                return Icon(
-                  Icons.sentiment_very_dissatisfied,
-                  color: Colors.red,
-                );
-              case 1:
-                return Icon(
-                  Icons.sentiment_dissatisfied,
-                  color: Colors.redAccent,
-                );
-              case 2:
-                return Icon(
-                  Icons.sentiment_neutral,
-                  color: Colors.amber,
-                );
-              case 3:
-                return Icon(
-                  Icons.sentiment_satisfied,
-                  color: Colors.lightGreen,
-                );
-              case 4:
-                return Icon(
-                  Icons.sentiment_very_satisfied,
-                  color: Colors.green,
-                );
-            }
-          },
-          onRatingUpdate: (rating) {
-            print(rating);
-          },
-        )],
+            Text(
+              sprintf('Butt Rating %1.2f / %d votes', [score, votes]),
+              style: Theme.of(context).textTheme.bodyText2,
+            ),
+            _buttFaces(),
+
+        ],
         ),
       ),
     );
+  }
+
+  void _goForward() {
+    if(buttFinger < allButts.length-1) {
+      buttFinger = buttFinger + 1;
+      buttLoad(buttFinger);
+    }
+
+  }
+
+  void _goBack() {
+    if(buttFinger > 0) {
+      buttFinger = buttFinger - 1;
+      buttLoad(buttFinger);
+    }
   }
 }
