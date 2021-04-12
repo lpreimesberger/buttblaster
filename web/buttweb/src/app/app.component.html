@@ -1,0 +1,50 @@
+<style xmlns="http://www.w3.org/1999/html">
+</style>
+
+<!-- Toolbar -->
+<div class="toolbar" role="banner">
+  <img
+    width="40"
+    alt="Angular Logo"
+    src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg=="
+  />
+  <span>Butt Blaster</span>
+    <div class="spacer"></div>
+</div>
+<mat-grid-list cols="3" rowHeight="2:1" style="margin-top: 7%;">
+  <mat-grid-tile>
+    <img mat-card-image [src]="buttsnap" alt="last butt" style="max-width: 80%;" >
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <img id="butt" name="butt" src="/assets/images/button.svg" width="150" (click)="red()">
+    </mat-grid-tile>
+  <mat-grid-tile>
+    <qrcode [qrdata]="uuid" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
+  </mat-grid-tile>
+</mat-grid-list>
+
+<div class="content" role="main">
+  <label>
+    Name:
+    <input type="text" [value]="name" size="50" width="500" class="form-control" >
+  </label>
+  <label>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bio:
+    <input type="text" [value]="bio"  size="50" width="500" class="form-control" >
+  </label>
+  <label>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UID:
+    <input type="text" [value]="uuid"  size="50" width="500" class="form-control" >
+  </label>
+  <button mat-raised-button color="accent" (click)="cycle()">Randomize</button>
+
+  <!-- Footer -->
+  <footer style="font-family: Consolas;">
+    <p>All code, images, and trademarks are Copyleft &copy; Pussy Avalanche - commodification forbidden</p>
+
+  </footer>
+
+</div>
+
+
+<router-outlet></router-outlet>
