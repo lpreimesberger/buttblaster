@@ -35,8 +35,6 @@ def butt(bid: str):
 @app.route('/buttsnap')
 def buttsnap():
 # return request butt image
-    print('buttsnap/' + datetime.datetime.utcnow().isoformat())
-    print("Sending /tmp/buttsnap.png")
     return send_from_directory('/tmp', "buttsnap.png")
 
 
@@ -66,14 +64,20 @@ def butts():
 
 @app.route('/')
 def root():
-    print("root")
-    return send_from_directory('./', 'catbutt.png')
+    print("sending default root -> index.html")
+    return send_from_directory('./', 'index.html')
 
 
-@app.route('/<file>', defaults={'file': '1.jpg'})
-def hello_world(file: str):
-    print("./{}".format(file))
-    return send_from_directory('./', file)
+@app.route(('/<page_name>'))
+def page(page_name):
+    print("Sending request page -> ", page_name)
+    return send_from_directory('./', page_name)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    print("404 -> ", e)
+    return send_from_directory('./', 'index.html')
 
 
 if __name__ == '__main__':

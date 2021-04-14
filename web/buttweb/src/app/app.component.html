@@ -16,7 +16,8 @@
     <img mat-card-image [src]="buttsnap" alt="last butt" style="max-width: 80%;" >
   </mat-grid-tile>
   <mat-grid-tile>
-    <img id="butt" name="butt" src="/assets/images/button.svg" width="150" (click)="red()">
+    <app-svg (click)="red()" style="width: 150px;"></app-svg>
+
     </mat-grid-tile>
   <mat-grid-tile>
     <qrcode [qrdata]="uuid" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>

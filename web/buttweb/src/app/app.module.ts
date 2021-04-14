@@ -12,10 +12,13 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {QRCodeModule} from 'angularx-qrcode';
 import {MatButtonModule} from '@angular/material/button';
 import {HttpClientModule} from '@angular/common/http';
+import { SvgComponent } from './svg/svg.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SvgComponent,
   ],
   imports: [
     BrowserModule,
@@ -27,6 +30,7 @@ import {HttpClientModule} from '@angular/common/http';
     MatButtonModule,
     HttpClientModule,
     QRCodeModule,
+  MatSnackBarModule,
     ReactiveFormsModule
   ],
   providers: [
