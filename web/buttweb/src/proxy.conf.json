@@ -1,11 +1,15 @@
 {
   "/buttsnap": {
     "target": "http://192.168.86.174:5000/buttsnap",
-    "secure": false
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
   },
-  "/addbutt": {
-    "target": "http://192.168.86.174:5000/addbutt",
-    "secure": false
+  "/addbutt/*": {
+    "target": "http://192.168.86.174:5000/addbutt/",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
   }
 
 }

@@ -1,9 +1,13 @@
 import datetime
-
+import os
+import shutil
+import pathlib
 import couchdb
 from flask import Flask, send_from_directory, request
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 couch = couchdb.Server('http://buttblaster:butts@127.0.0.1:5984/')
 try:
     db = couch['butts']
@@ -18,8 +22,9 @@ def addbutt(bid: str):
     print('addbutt/' + bid)
     print(content)
     xxxx = db.save(
-        {'_id': content['uuid'], 'name': content['name'], 'bio': content['name'], 'added': datetime.datetime.utcnow().isoformat()}
+        {'_id': content['uuid'], 'name': content['name'], 'bio': content['bio'], 'added': datetime.datetime.utcnow().isoformat()}
     )
+    shutil.copy('/tmp/buttsnap.png', 'butts/' + bid)
     print(xxxx)
     print('done')
     return {}
@@ -28,7 +33,9 @@ def addbutt(bid: str):
 @app.route('/butt/<bid>')
 def butt(bid: str):
 # return request butt image
-    print('butts/' + bid )
+    print('Trying to serve butts/' + bid)
+    if not pathlib.Path('butts/'+bid).exists():
+        return send_from_directory('.', 'catbutt.png')
     return send_from_directory('butts', bid)
 
 
@@ -45,11 +52,11 @@ def rateButt(bid: str, value):
         doc = db.get(bid)
         if 'ratings' not in doc.keys():
             doc['ratings'] = []
-            doc['ratings'].append({"posted": datetime.datetime.utcnow().isoformat(), "value": value})
-            db.save(doc)
+        doc['ratings'].append({"posted": datetime.datetime.utcnow().isoformat(), "value": value})
+        db.save(doc)
     except Exception as e:
         print(e)
-    return send_from_directory('butts', bid)
+    return {}
 
 
 @app.route('/butts')
@@ -73,10 +80,12 @@ def page(page_name):
     print("Sending request page -> ", page_name)
     return send_from_directory('./', page_name)
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
     print("404 -> ", e)
+    print(request.url)
     return send_from_directory('./', 'index.html')
 
 

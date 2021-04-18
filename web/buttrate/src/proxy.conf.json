@@ -1,0 +1,16 @@
+{
+  "/butts": {
+    "target": "http://192.168.86.174:5000/",
+    "secure": false
+  },
+  "/butt": {
+    "target": "http://192.168.86.174:5000/",
+    "secure": false
+  },
+  "/ratebutt": {
+    "target": "http://192.168.86.174:5000/",
+    "secure": false
+  }
+
+
+}

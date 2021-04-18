@@ -1,0 +1,40 @@
+<style>
+</style>
+
+<!-- Toolbar -->
+<div class="toolbar" role="banner">
+  <img
+    width="40"
+    alt="Angular Logo"
+    src="assets/peach.svg"
+  />
+    <div class="spacer"></div>
+</div>
+
+<div class="content" role="main">
+
+  <img src="/butt/{{butts[buttIndex]._id}}">
+  <div>{{butts[buttIndex]._id}}</div>
+  <div class=col-md-12>
+    <ngb-rating
+      style="align-self: center" [max]="5" [(rate)]="current" [readonly]="false" (click)="rated()">
+    </ngb-rating><span style="font-size: 80px;"> {{cRating | number}}</span>
+  </div>
+ <h2> <div>{{butts[buttIndex].name}}</div> </h2>
+
+  <h3><div>{{butts[buttIndex].bio}}</div></h3>
+  <div>Image added {{butts[buttIndex].added}}</div>
+  <span style="width: 90%">
+    <button type="button" class="btn btn-primary" style="width: 50%" (click)="back()"><<</button>
+    <button type="button" class="btn btn-primary" style="width: 50%" (click)="advance()">>></button>
+  </span>
+
+  <footer style="font-family: Consolas;">
+    <p>All code, images, and trademarks are Copyleft &copy; Pussy Avalanche - commodification forbidden</p>
+  </footer>
+
+
+</div>
+
+
+<router-outlet></router-outlet>

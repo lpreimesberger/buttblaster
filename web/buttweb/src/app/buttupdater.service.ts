@@ -8,17 +8,23 @@ import {tick} from '@angular/core/testing';
 export class ButtupdaterService {
   private message = new Subject<string>();
   public buttSnap$ = this.message.asObservable();
-  private barebutt = 'http://192.168.86.174:5000/buttsnap';
-  private butt = 'http://192.168.86.174:5000/buttsnap';
+  public host = 'http://192.168.86.174:5000';
+  private barebutt = this.host + '/buttsnap';
+  private butt = this.host + '/buttsnap';
   constructor() {
-    setInterval(this.butter.bind(this), 5000);
+    setInterval(this.butter.bind(this), 50000);
   }
 
   // tslint:disable-next-line:typedef
   butter(){
-    console.log('click');
     this.butt = this.barebutt + '?cache=' + Math.random();
     this.message.next(this.butt);
   }
+
+  buttsnap(): boolean {
+    console.log('butt snap');
+
+    return true;
+}
 
 }

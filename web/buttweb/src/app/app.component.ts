@@ -35,7 +35,7 @@ export class AppComponent {
     this.name = lodash.sample(adjectives.data) + ' ' + faker.name.firstName();
     this.bio = lodash.sample(action.data) + ' ' + lodash.sample(verbs.data) + ' ' + lodash.sample(fun.data);
     this.uuid = uuidv4();
-    this.snackBar.open('cat', 'more', { duration: 2000});
+    this.snackBar.open('New user data', 'more', { duration: 2000});
   }
   constructor(public bu: ButtupdaterService, public cd: ChangeDetectorRef, public client: HttpClient, public snackBar: MatSnackBar) {
     // surpress error
@@ -52,11 +52,13 @@ export class AppComponent {
   red(): void {
     const thisSnap = document.getElementById('butt');
     console.log(thisSnap);
+    new Audio('/assets/click.mp3').play();
     const data = { name: this.name, bio: this.bio, uuid: this.uuid};
-    this.client.post('/addbutt', data).toPromise().then( (cats) => {
+    this.client.post(this.bu.host + '/addbutt/' + this.uuid, data).toPromise().then( (cats) => {
       console.log(cats);
+      this.snackBar.open('Butt snapped', 'more', { duration: 2000});
     }).catch((theError) => {
-      alert(theError);
+      this.snackBar.open('An error occurred', 'more', { duration: 2000});
     }).finally( () => {
       this.cycle();
     });
