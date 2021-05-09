@@ -11,30 +11,9 @@
   <span>Butt Blaster</span>
     <div class="spacer"></div>
 </div>
-<mat-grid-list cols="3" rowHeight="2:1" style="margin-top: 7%;">
-  <mat-grid-tile>
-    <table>
-    <tr><td>
-      <img mat-card-image [src]="buttsnap" alt="last butt" style="max-width: 90%;" >
-    </td></tr>
-      <tr>
-        <td>
-
-        </td>
-      </tr>
-    </table>
-
-  </mat-grid-tile>
-  <mat-grid-tile>
-    <app-svg (click)="red()" style="width: 150px;"></app-svg>
-    <audio id="click" src="assets/click.mp3"></audio>
-    </mat-grid-tile>
-  <mat-grid-tile>
-    <qrcode [qrdata]="uuid" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
-  </mat-grid-tile>
-</mat-grid-list>
-
-<div class="content" role="main">
+<mat-grid-list cols="3" rowHeight="1:1" style="margin-top: 13%; height: 80%;">
+<mat-grid-tile>
+  <div class="content" role="main">
   <label>
     Name:
     <input type="text" [value]="name" size="50" width="500" class="form-control" >
@@ -48,14 +27,36 @@
     <input type="text" [value]="uuid"  size="50" width="500" class="form-control" >
   </label>
   <button mat-raised-button color="accent" (click)="cycle()">Randomize</button>
+    <br/>
+  <button mat-raised-button color="default" (click)="red()">Snap</button>
+  <audio id="click2" src="assets/click.mp3"></audio>
+  </div>
+</mat-grid-tile>
+  <mat-grid-tile>
+    <table >
+      <tr><td></td></tr>
+      <tr><td>Find your own butt!
+        <img mat-card-image [src]="buttsnap" alt="last butt" style="max-width: 100%;" >
+      </td></tr>
+      <tr>
+        <td>
 
+        </td>
+      </tr>
+    </table>
+
+  </mat-grid-tile>
+
+  <mat-grid-tile>
+    <qrcode [qrdata]="uuid" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
+  </mat-grid-tile>
+</mat-grid-list>
   <!-- Footer -->
-  <footer style="font-family: Consolas;">
+  <footer style="font-family: Consolas; align-content: center">
     <p>All code, images, and trademarks are Copyleft &copy; Pussy Avalanche - commodification forbidden</p>
 
   </footer>
 
-</div>
 
 
 <router-outlet></router-outlet>

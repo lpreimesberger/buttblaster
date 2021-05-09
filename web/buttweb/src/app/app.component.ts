@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component, HostListener} from '@angular/core';
 import {Observable} from 'rxjs';
 import {ButtupdaterService} from './buttupdater.service';
 import * as faker from 'faker';
@@ -25,7 +25,15 @@ export class AppComponent {
   name: string;
   bio: string;
   uuid: string;
+  keypressed = 12;
 
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent): void {
+    this.keypressed = event.keyCode;
+    console.log(this.keypressed);
+    if( this.keypressed === 82 ){ this.cycle(); }
+    if( this.keypressed === 83 ){ this.red(); }
+  }
 
   makeName(x: string): string {
     return x.charAt(0).toUpperCase() + x.slice(1);

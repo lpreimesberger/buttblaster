@@ -42,6 +42,8 @@ def butt(bid: str):
 @app.route('/buttsnap')
 def buttsnap():
 # return request butt image
+    if not pathlib.Path('/tmp/buttsnap.png').exists():
+        return send_from_directory('.', "defaultbutt.jpg")
     return send_from_directory('/tmp', "buttsnap.png")
 
 
