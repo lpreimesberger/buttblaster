@@ -14,6 +14,8 @@ import {MatButtonModule} from '@angular/material/button';
 import {HttpClientModule} from '@angular/common/http';
 import { SvgComponent } from './svg/svg.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {WebcamModule} from 'ngx-webcam';
+import {NgImageSliderModule} from 'ng-image-slider';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     MatButtonModule,
     HttpClientModule,
     QRCodeModule,
+    WebcamModule,
+    NgImageSliderModule,
   MatSnackBarModule,
     ReactiveFormsModule
   ],

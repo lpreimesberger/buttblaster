@@ -1,31 +1,41 @@
-import datetime
-import os
-import shutil
 import pathlib
-import couchdb
-from flask import Flask, send_from_directory, request
+import sqlite3
+from flask import Flask, send_from_directory, request, logging
 from flask_cors import CORS
+from flask.logging import default_handler
+from waitress import serve
 
 app = Flask(__name__)
 CORS(app)
-couch = couchdb.Server('http://buttblaster:butts@127.0.0.1:5984/')
-try:
-    db = couch['butts']
-except couchdb.http.ResourceNotFound:
-    db = couch.create('butts')
-    pass
 
+LOG = logging.create_logger(app)
+LOG.addHandler(default_handler)
 
 @app.route('/addbutt/<bid>', methods=['POST'])
 def addbutt(bid: str):
     content = request.json
     print('addbutt/' + bid)
     print(content)
-    xxxx = db.save(
-        {'_id': content['uuid'], 'name': content['name'], 'bio': content['bio'], 'added': datetime.datetime.utcnow().isoformat()}
-    )
-    shutil.copy('/tmp/buttsnap.png', 'butts/' + bid)
-    print(xxxx)
+    return {}
+
+
+@app.route('/sendbutt/<bid>', methods=['POST'])
+def sendbutt(bid: str):
+    content = request.json
+    LOG.info('sendbutt/' + bid)
+    connection = sqlite3.connect("butts.db")
+    cursor = connection.cursor()
+#    print(content)
+    x = cursor.execute("insert into butts values(?,?,?,?,?)",
+                   (content['uuid'],
+                    content['name'],
+                    content['bio'],
+                    0,
+                    content['butt'],
+                    ))
+    connection.commit()
+    cursor.close()
+    print(x)
     print('done')
     return {}
 
@@ -50,12 +60,16 @@ def buttsnap():
 @app.route('/ratebutt/<bid>/<value>', methods=['PUT'])
 def rateButt(bid: str, value):
     try:
+        LOG.info("Butt rating")
         print("getting butt {}".format(bid))
-        doc = db.get(bid)
-        if 'ratings' not in doc.keys():
-            doc['ratings'] = []
-        doc['ratings'].append({"posted": datetime.datetime.utcnow().isoformat(), "value": value})
-        db.save(doc)
+        connection = sqlite3.connect("butts.db")
+        cursor = connection.cursor()
+        print("rating butt ", bid)
+        cursor.execute(
+            "UPDATE butts set likes=likes+1 where _id=?;",
+            (bid,))
+        connection.commit()
+        cursor.close()
     except Exception as e:
         print(e)
     return {}
@@ -64,10 +78,20 @@ def rateButt(bid: str, value):
 @app.route('/butts')
 def butts():
 # return all the butts
+    LOG.info("Butt query")
     results = []
-    for butt in db:
-        print(butt)
-        results.append(db.get(butt))
+    connection = sqlite3.connect("butts.db")
+    cursor = connection.cursor()
+    print("Select from sqlite")
+    rows = cursor.execute("SELECT * from butts;").fetchall()
+    print(rows.count('*'))
+    for row in rows:
+        print('lite', row)
+        results.append( {"bio": row[2],
+            "butt": row[4],
+            "name": row[1],
+            "likes": row[3],
+            "_id": row[0]} )
     return {"data": results}
 
 
@@ -91,5 +115,6 @@ def page_not_found(e):
     return send_from_directory('./', 'index.html')
 
 
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=True)
+#app.run(host="0.0.0.0", debug=True)
+LOG.info("Buttserver starting on 5000")
+serve(app, port=5000)

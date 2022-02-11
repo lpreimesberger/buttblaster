@@ -276,7 +276,7 @@ svg#clouds {
     margin: 8px 0;
   }
   mat-grid-tile {
-    background: lightblue;
+    background: lightgray;
   }
   .card.highlight-card span {
     margin-left: 72px;
