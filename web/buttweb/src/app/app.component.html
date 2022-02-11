@@ -8,24 +8,22 @@
     alt="Angular Logo"
     src="assets/peach.svg"
   />
-  <span>Butt Blaster (lame virtual edition)</span>
+  <span>Butt Blaster 20220210</span>
     <div class="spacer"></div>
 </div>
 
-<span id="disclaimer" *ngIf="disclaimer" style="align-content: center;">
-  <h1>The Butt Blaster may be a restricted site in your region.</h1>
-  <img src="assets/peach.svg" width="50px" style="margin-left: 10%; margin-top: 5%;">
+<span id="disclaimer" *ngIf="disclaimer" style="align-content: center; margin-top: 5%">
+  <div style="max-height: 5%; min-height: 5%;"></div>
+  <img src="assets/peach.svg" width="50px" style="margin-left: 10%; margin-top: 15%;">
   <br/>
   <p style="color: #24292e;margin-top: 5%; margin-left: 10%; margin-right: 10%; font-size: large">
-    Through the power of the Internet - you will be connected to our camp live in Black Rock City, where
-    one of us is sitting, nursing a juice box, next to our Butt Blaster Kiosk and local hotspot.
+    Generally - don't accept the offer of random weirdos to take you to the Buttblaster
     </p>
 
   <p style="color: #24292e;margin-top: 5%; margin-left: 10%; margin-right: 10%; font-size: large">
-    Sparklever.se is an 18+ event.  By clicking through you
-    agree you are over 18 to be allowed access.
+    By clicking through you agree you are over 18 to be allowed access.
   </p>
-  <button mat-raised-button color="accent" style="color: #24292e;margin-top: 3%; margin-left: 10%; margin-right: 10%" (click)="agree()">Nerd! - let me into the Butt Blaster</button>
+  <button mat-raised-button color="accent" style="color: #24292e;margin-top: 3%; margin-left: 20%; margin-right: 10%" (click)="agree()">Nerd! - let me into the Butt Blaster</button>
 </span>
 <span id="rank" style="margin-top: 10%; text-align: center;" *ngIf="rankMode">
   <br/>
@@ -34,17 +32,25 @@
           [manageImageRatio]="true"
           [autoSlide]="true"
           [imagePopup]="false"
-                         (imageClick)="pokeButt($event)" [images]="imageObject"
-                         [imageSize]="{width: '400px', height: '300px', space: 4}" #nav></ng-image-slider>
+          (imageClick)="pokeButt($event)" [images]="imageObject"
+          [imageSize]="{width: width, height: '300px', space: 4}" #nav></ng-image-slider>
       <h3>Click to like a butt</h3>
-      <button mat-raised-button color="default" (click)="rankMode = false; snapMode = true;">Switch back to snap mode</button>
+    <div style="align-content: center; margin-top: fill">
+      <!-- get latest butts -->
+      <button mat-raised-button color="default" (click)="load()">Get New Butts</button>
+    </div>
+    <div style="align-content: center; margin-top: 5%">
+      <!-- go back to butt capture mode -->
+      <button mat-raised-button color="default" (click)="rankMode = false; snapMode = true;">Switch back to Buttblaster mode</button>
+    </div>
+
     </span>
 <span id="snap" *ngIf="snapMode" style="text-align: center; margin-top: 7%; margin-left: 5%; margin-right: 5%">
       <div >
         <h3>Want to be judged?  Upload your butt to the Internet!</h3>
       </div>
     <div id="basic" style="text-align: center">
-      <webcam [height]="500" [width]="500" [trigger]="triggerObservable" (imageCapture)="handleImage($event)" *ngIf="showWebcam"
+      <webcam [width]="width*.75" [trigger]="triggerObservable" (imageCapture)="handleImage($event)" *ngIf="showWebcam"
               [allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable"
               [videoOptions]="videoOptions"
               [imageQuality]="1"
@@ -57,13 +63,22 @@
       </div>
   <label style="text-align: center; margin-top: 2%; margin-left: 5%; margin-right: 1%">
     Your Playa Name:
-    <input type="text" [value]="name" size="50" width="500" class="form-control" >
+    <input type="text" [value]="name" size="50" width="500" class="form-control" multiple >
   </label>
+  <label style="text-align: center; margin-top: 2%; margin-left: 5%; margin-right: 1%">
+    About you:
+    <input type="text" [value]="bio" size="50" style="word-break: break-word;" class="form-control" >
+  </label>
+  <div style="align-content: center">
   <button mat-raised-button color="accent" (click)="cycle()">Randomize Name</button>
+  </div>
+
   <br/>
+  <div style="align-content: center">
+
   <button style="text-align: center; margin-top: 2%; margin-left: 5%;" mat-raised-button color="default" (click)="triggerSnapshot();">Grab My Butt!</button>
   <button mat-raised-button color="default" (click)="snapMode=false;rankMode=true;">No way - show me butts</button>
-
+  </div>
     <br/>
 
     </span>
@@ -71,11 +86,17 @@
   <div class="content" role="main">
     <span id="confirm" *ngIf="confirmMode">
       <div>
-        <img [src]="theButt" alt="Red dot" />
+        <img [src]="theButt" alt="Red dot" [width]="width*.75"/>
       </div>
 
+      <table style="align-content: center">
+        <tr><td>
       <button mat-raised-button color="default" (click)="sendButt();">Send My Butt!</button>
+        </td></tr>
+        <tr><td>
       <button mat-raised-button color="warn" (click)="rankMode = confirmMode = false; snapMode = true;">Redo</button>
+        </td></tr>
+      </table>
 
     </span>
   <audio id="click2" src="assets/click.mp3"></audio>
@@ -83,8 +104,11 @@
   <!-- Footer -->
   <footer >
     <div style="font-family: Consolas, monospace; align-content: center; text-align: center; font-size: xx-small; margin-left: 5%; margin-right: 5%;">
-      Copyright 2021 &copy; Pussy Avalanche.  Just like on playa, you may not make commercial use of any images or content on this site.  Fuck your virtual burn.  :)
+      Copyleft 2021-2022 &copy; Pussy Avalanche.  You may not make commercial use of any images or content on this site.  Fuck your burn.  :)
+      <br/>
+      Don't share the butts of others without asking :)
     </div>
+
   </footer>
 
 

@@ -9,7 +9,7 @@ export class ButtupdaterService {
   private message = new Subject<string>();
   public buttSnap$ = this.message.asObservable();
 //  public host = 'http://192.168.86.20:5000';
-  public host = 'https://sparkle.buttfrenzymagazine.com/api';
+  public host = '/api';
   private barebutt = this.host + '/buttsnap';
   private butt = this.host + '/buttsnap';
   constructor() {

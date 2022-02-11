@@ -43,6 +43,8 @@ export class AppComponent implements OnInit {
   public confirmMode = false;
   public disclaimer = true;
   public rankMode = false;
+  public width = 1000;
+  public height = 1000;
   imageObject: Array<object> = [  ];
 
 
@@ -81,6 +83,7 @@ export class AppComponent implements OnInit {
   cycle() {
     this.name = lodash.sample(adjectives.data) + ' ' + faker.name.firstName();
     this.bio = lodash.sample(action.data) + ' ' + lodash.sample(verbs.data) + ' ' + lodash.sample(fun.data);
+    this.bio = this.bio.toLowerCase();
     this.uuid = uuidv4();
     this.snackBar.open('New user data', 'more', { duration: 2000});
   }
@@ -93,7 +96,19 @@ export class AppComponent implements OnInit {
     this.hasCamera = false;
     this.uuid = uuidv4();
     this.cycle();
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
   }
+
+  // handle phone flips
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    console.log('handling resizing');
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+  }
+
+
 
   ngOnInit(): void {
       this.load();
@@ -119,14 +134,14 @@ export class AppComponent implements OnInit {
     console.log('loading butts');
     this.client.get(this.bu.host + '/butts').toPromise().then((raw: any) => {
       const cats: AllButts = raw;
-      console.log(cats);
+      // clean the butts
+      this.imageObject = [];
       // @ts-ignore
       for (const x in cats.data) {
         const record: OneButt = cats.data[x];
         if (record.butt.length < 5) {
           continue;
         }
-        console.log('record ', record);
         this.imageObject.push({
           image: record.butt,
           thumbImage: record.butt,
@@ -136,10 +151,6 @@ export class AppComponent implements OnInit {
           title: record.name + ' ' + record.likes + ' ♥',
           alt: 'Image alt',
         });
-        console.log('array');
-        console.log(this.imageObject);
-
-
       }
     }).catch((theError) => {
       this.snackBar.open('An error occurred', 'more', { duration: 2000});
