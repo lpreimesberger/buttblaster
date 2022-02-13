@@ -167,6 +167,8 @@ export class AppComponent implements OnInit {
   }
 
   public handleInitError(error: WebcamInitError): void {
+    console.log('Failed to access the web cam?');
+    console.log(error);
     this.errors.push(error);
   }
 
