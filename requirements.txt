@@ -3,7 +3,7 @@ CouchDB==1.2
 evdev==1.4.0
 exif==1.2.1
 Faker==8.11.0
-Flask==1.1.2
+Flask==2.3.2
 Flask-Cors==3.0.10
 future==0.18.2
 guizero==1.1.1
